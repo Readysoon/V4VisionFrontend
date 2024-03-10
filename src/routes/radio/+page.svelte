@@ -1,29 +1,17 @@
 <script>
     let imageUrl = 'kneexraygoogle.jpg';
-    /** @type {string|null} */
-    let activeBox = null; // Determines which box is highlighted based on the paragraph hovered
+    
+    let activeBox = null;
 
-    /**
-    * Define a function to update the activeBox
-    * @param {number} index - The index to check
-    */
-
-    // Define a function to update the activeBox
-    function updateActiveBox(index) {
-        if ([1, 2, 3].includes(index)) {
-            activeBox = 'upper-middle';
-        } else if ([4, 5, 6].includes(index)) {
-            activeBox = 'middle-middle';
-        } else if ([7, 8, 9].includes(index)) {
-            activeBox = 'lower-middle';
-        }
+    function setActiveBox(boxName) {
+        activeBox = boxName;
     }
 
     function clearActiveBox() {
         activeBox = null;
     }
 </script>
-  
+
 <style>
     :global(body), :global(html) {
         margin: 0;
@@ -95,6 +83,17 @@
     .active {
         border-color: green;
     }
+
+    /* Specific alignment for the first paragraph (Briefkopf) */
+    .text-container p:first-child {
+    text-align: left;
+    align-self: flex-start;
+    width: 100%;
+    }
+
+    p.hover.upperbox:hover { cursor: pointer; }
+    p.hover.middlebox:hover { cursor: pointer; }
+    p.hover.lowerbox:hover { cursor: pointer; }
 </style>
 
 <div class="body">
@@ -107,10 +106,9 @@
         </div>
     </div>
     <div class="container text-container">
-        {#each Array(9).fill(0) as _, index (index)}
-            <p class={(index + 1).toString()} on:mouseenter={() => updateActiveBox(index + 1)} on:mouseleave={clearActiveBox}>
-                {`Paragraph ${index + 1}`}
-            </p>
-        {/each}
+        <p>Briefkopf</p>
+        <p class="hover upperbox" on:mouseenter={() => setActiveBox('upper-middle')} on:mouseleave={clearActiveBox}>On the lateral side of the femur a bony protuberance is visible.</p>
+        <p class="hover middlebox" on:mouseenter={() => setActiveBox('middle-middle')} on:mouseleave={clearActiveBox}>The epicondiles are in good shape.</p>
+        <p class="hover lowerbox" on:mouseenter={() => setActiveBox('lower-middle')} on:mouseleave={clearActiveBox}>The joint gap is even and shows no signs of erosion.</p>
     </div>
 </div>
