@@ -1,5 +1,27 @@
 <script>
     let imageUrl = 'kneexraygoogle.jpg';
+    /** @type {string|null} */
+    let activeBox = null; // Determines which box is highlighted based on the paragraph hovered
+
+    /**
+    * Define a function to update the activeBox
+    * @param {number} index - The index to check
+    */
+
+    // Define a function to update the activeBox
+    function updateActiveBox(index) {
+        if ([1, 2, 3].includes(index)) {
+            activeBox = 'upper-middle';
+        } else if ([4, 5, 6].includes(index)) {
+            activeBox = 'middle-middle';
+        } else if ([7, 8, 9].includes(index)) {
+            activeBox = 'lower-middle';
+        }
+    }
+
+    function clearActiveBox() {
+        activeBox = null;
+    }
 </script>
   
 <style>
@@ -27,7 +49,7 @@
         justify-content: center;
         align-items: center;
         width: 50%;
-        padding: 10px; /* This padding applies to the content inside the container. */
+        padding: 10px;
         box-sizing: border-box;
     }
 
@@ -39,6 +61,7 @@
 
     .text-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100%;
@@ -47,25 +70,47 @@
         overflow-y: auto;
         background-color: white;
         color: black;
-        margin: 0 100px 100px; /* Add left, right, and bottom margins to the text container */
+        margin: 0 100px 100px;
+    }
+
+    .overlay {
+        position: absolute;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        width: 100%;
+        height: 100%;
+        top: 0;
+        pointer-events: none;
+    }
+
+    .box {
+        border: 2px solid transparent;
+    }
+
+    .box.upper-middle { grid-area: 1 / 2; }
+    .box.middle-middle { grid-area: 2 / 2; }
+    .box.lower-middle { grid-area: 3 / 2; }
+
+    .active {
+        border-color: green;
     }
 </style>
 
 <div class="body">
-    <div class="container image-container">
+    <div class="container image-container" style="position: relative;">
         <img src={imageUrl} alt="Knee X-ray">
+        <div class="overlay">
+            <div class="box upper-middle" class:active={activeBox === 'upper-middle'}></div>
+            <div class="box middle-middle" class:active={activeBox === 'middle-middle'}></div>
+            <div class="box lower-middle" class:active={activeBox === 'lower-middle'}></div>
+        </div>
     </div>
     <div class="container text-container">
-        <p class="1">Der Gelenkspalt ist nicht verkleinert</p>
-        <p class="2">Keine Fraktur erkennbar</p>
-        <p class="3">keine rechts/links fehlstellung</p>
-        <p class="4">test test test </p>
-        <p class="5">ok ok ok</p>
-        <p class="6">Keine Fraktur erkennbar</p>
-        <p class="7">keine rechts/links fehlstellung</p>
-        <p class="8">test test test </p>
-        <p class="9">ok ok ok</p>
+        {#each Array(9).fill(0) as _, index (index)}
+            <p class={(index + 1).toString()} on:mouseenter={() => updateActiveBox(index + 1)} on:mouseleave={clearActiveBox}>
+                {`Paragraph ${index + 1}`}
+            </p>
+        {/each}
     </div>
 </div>
-
-make an overlay for the image which has 9 divs in 3 rows and 3 boxes with green margins for each box. the margins should be hidden
